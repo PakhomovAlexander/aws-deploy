@@ -5,4 +5,4 @@ jobs:
       - image: golang:1.12.1
     steps:
       - checkout
-      - run: cd rest-api/ && go get -u github.com/gorilla/mux &&  go test
+      - run: go get -u github.com/gorilla/mux &&  go test
