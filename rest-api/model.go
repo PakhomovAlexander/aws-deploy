@@ -1,4 +1,4 @@
-package api
+package main
 
 // model
 type Note struct {
