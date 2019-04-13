@@ -7,6 +7,7 @@ import (
     "log"
     "net/http"
     "github.com/gorilla/mux"
+    "time"
 )
 
 type App struct {
@@ -14,7 +15,9 @@ type App struct {
     // DB     *sql.DB
 }
 
-var notes []Note
+var notes = []Note{Note{ID: "1", Timestamp: 1, Text: "1"},
+                   Note{ID: "2", Timestamp: 2, Text: "2"},
+                   Note{ID: "3", Timestamp: 3, Text: "3"}}
 
 func (a *App) Initialize() {//(user, password, dbname string) {
     // connectionString := fmt.Sprintf("%s:%s@/%s", user, password, dbname)
@@ -23,10 +26,6 @@ func (a *App) Initialize() {//(user, password, dbname string) {
     // if err != nil {
     //     log.Fatal(err)
     // }
-
-	notes = append(notes, Note{ID: "1", Timestamp: 1, Text: "1"})
-	notes = append(notes, Note{ID: "2", Timestamp: 2, Text: "2"})
-	notes = append(notes, Note{ID: "3", Timestamp: 3, Text: "3"})
 
     a.Router = mux.NewRouter()
     a.initializeRoutes()
@@ -51,7 +50,9 @@ func GetNotes(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(notes)
 }
 
+// it works slow
 func GetNote(w http.ResponseWriter, r *http.Request) {
+    time.Sleep(10000 * time.Millisecond)
     params := mux.Vars(r)
     for _, item := range notes {
         if item.ID == params["id"] {
@@ -71,13 +72,17 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(notes)
 }
 
+// it returns 500 error code
 func DeleteNote(w http.ResponseWriter, r *http.Request) {
-    params := mux.Vars(r)
-    for index, item := range notes {
-        if item.ID == params["id"] {
-            notes = append(notes[:index], notes[index+1:]...)
-            break
-        }
-        json.NewEncoder(w).Encode(notes)
-    }
+    w.WriteHeader(http.StatusInternalServerError)
+    w.Write([]byte("500 - Something bad happened!"))
+
+    // params := mux.Vars(r)
+    // for index, item := range notes {
+    //     if item.ID == params["id"] {
+    //         notes = append(notes[:index], notes[index+1:]...)
+    //         break
+    //     }
+    //     json.NewEncoder(w).Encode(notes)
+    // }
 }
