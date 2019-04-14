@@ -5,6 +5,7 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"time"
 	"log"
 	"net/http"
 )
@@ -14,7 +15,10 @@ type App struct {
 	// DB     *sql.DB
 }
 
-var notes []Note
+var notes = []Note{Note{ID: "1", Timestamp: 1, Text: "1"},
+                   Note{ID: "2", Timestamp: 2, Text: "2"},
+                   Note{ID: "3", Timestamp: 3, Text: "3"}}
+
 
 func (a *App) Initialize() { //(user, password, dbname string) {
 	// connectionString := fmt.Sprintf("%s:%s@/%s", user, password, dbname)
@@ -23,10 +27,6 @@ func (a *App) Initialize() { //(user, password, dbname string) {
 	// if err != nil {
 	//     log.Fatal(err)
 	// }
-
-	notes = append(notes, Note{ID: "1", Timestamp: 1, Text: "1"})
-	notes = append(notes, Note{ID: "2", Timestamp: 2, Text: "2"})
-	notes = append(notes, Note{ID: "3", Timestamp: 3, Text: "3"})
 
 	a.Router = mux.NewRouter()
 	a.initializeRoutes()
@@ -37,13 +37,20 @@ func (a *App) Run(addr string) {
 }
 
 func (a *App) initializeRoutes() {
+	a.Router.HandleFunc("/", Root).Methods("GET")
 	a.Router.HandleFunc("/notes", GetNotes).Methods("GET")
 	a.Router.HandleFunc("/notes/{id}", GetNote).Methods("GET")
 	a.Router.HandleFunc("/notes/{id}", CreateNote).Methods("POST")
 	a.Router.HandleFunc("/notes/{id}", DeleteNote).Methods("DELETE")
+	a.Router.HandleFunc("/notesslow", Slow).Methods("GET")
+	a.Router.HandleFunc("/noteserror", Error).Methods("GET")
 }
 
 // --- handlers ---
+
+func Root(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
 
 func GetNotes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(notes)
@@ -78,4 +85,15 @@ func DeleteNote(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(notes)
 	}
+}
+
+func Slow(w http.ResponseWriter, r *http.Request) {
+    time.Sleep(10000 * time.Millisecond)
+	w.WriteHeader(http.StatusOK)
+    w.Write([]byte(""))
+}
+
+func Error(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
+    w.Write([]byte("500 - Something bad happened!"))
 }
