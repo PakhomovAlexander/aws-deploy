@@ -88,7 +88,7 @@ func DeleteNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func Slow(w http.ResponseWriter, r *http.Request) {
-    time.Sleep(10000 * time.Millisecond)
+    time.Sleep(60 * time.Second)
 	w.WriteHeader(http.StatusOK)
     w.Write([]byte(""))
 }
