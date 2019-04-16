@@ -19,6 +19,14 @@ func TestGet(t *testing.T) {
 	}
 }
 
+func TestError(t *testing.T) {
+    a = App{}
+    a.Initialize()
+    req, _ := http.NewRequest("GET", "/noteserror", nil)
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusInternalServerError, response.Code)
+}
+
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
 	a.Router.ServeHTTP(rr, req)
