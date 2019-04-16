@@ -5,9 +5,9 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"time"
 	"log"
 	"net/http"
+	"time"
 )
 
 type App struct {
@@ -16,9 +16,8 @@ type App struct {
 }
 
 var notes = []Note{Note{ID: "1", Timestamp: 1, Text: "1"},
-                   Note{ID: "2", Timestamp: 2, Text: "2"},
-                   Note{ID: "3", Timestamp: 3, Text: "3"}}
-
+	Note{ID: "2", Timestamp: 2, Text: "2"},
+	Note{ID: "3", Timestamp: 3, Text: "3"}}
 
 func (a *App) Initialize() { //(user, password, dbname string) {
 	// connectionString := fmt.Sprintf("%s:%s@/%s", user, password, dbname)
@@ -88,12 +87,12 @@ func DeleteNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func Slow(w http.ResponseWriter, r *http.Request) {
-    time.Sleep(60 * time.Second)
+	time.Sleep(60 * time.Second)
 	w.WriteHeader(http.StatusOK)
-    w.Write([]byte(""))
+	w.Write([]byte(""))
 }
 
 func Error(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusInternalServerError)
-    w.Write([]byte("500 - Something bad happened!"))
+	w.Write([]byte("500 - Something VERY bad happened!"))
 }
