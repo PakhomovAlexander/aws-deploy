@@ -13,7 +13,7 @@ func TestGet(t *testing.T) {
 	a.Initialize()
 	req, _ := http.NewRequest("GET", "/notes", nil)
 	response := executeRequest(req)
-	checkResponseCode(t, http.StatusAccepted, response.Code)
+	checkResponseCode(t, http.StatusOK, response.Code)
 	if body := response.Body.String(); body == "[]" {
 		t.Errorf("Expected not empty array. Got %s", body)
 	}
